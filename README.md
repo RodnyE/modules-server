@@ -28,7 +28,7 @@ npm start
 This will start the server on `http://localhost:3000`. You can then use the API to create and download `node_modules` archives.
 
 ## API 
-### POST /api/create
+### 📚 POST /api/create
 
 Create a new `node_modules` archive using a JSON package. The JSON package should be similar to a `package.json` file, and should include a `dependencies` field specifying the required dependencies.
 
@@ -54,14 +54,14 @@ The response will include a JSON object with the following format:
 ```json
 {
   "status": true,
+  "message": "Started create node_modules operation",
   "job": {
     "id": "abc123"
-  },
-  "message": "Started create node_modules operation"
+  }
 }
 ```
 
-### GET /api/modules/:id
+### 📚 GET /api/modules/:id
 
 Download a previously created `node_modules` archive using a unique job ID.
 
@@ -72,3 +72,16 @@ The `:id` parameter should be a unique identifier for the job, as returned by th
 #### Response
 
 The response will include a `tar` archive containing all the dependencies specified in the original JSON package.
+
+### 📚 DELETE /api/modules/:id
+
+Delete a previously created `node_modules` archive
+
+#### Response 
+
+```json 
+{
+  "status": true,
+  "message": "Removed"
+}
+```

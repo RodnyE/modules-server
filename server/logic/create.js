@@ -31,7 +31,7 @@ const installModules = async (id, packageJson) => {
   try {
     await fs.writeFile(`${tempDir}/package.json`, JSON.stringify(packageJson));
     await new Promise((resolve, reject) => {
-      childProcess.exec(`cd ${tempDir} && npm install`, (err, stdout, stderr) => {
+      childProcess.exec(`cd ${tempDir} && npx pnpm install`, (err, stdout, stderr) => {
         if (err) {
           reject(err);
         } else {

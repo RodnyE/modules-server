@@ -1,7 +1,8 @@
 
 const { TEMP } = require('../config.js');
-const { createModule } = require('./logic/create-module.js');
-const { getModule } = require('./logic/get-module.js');
+const { createModule } = require('./logic/create.js');
+const { getModule } = require('./logic/get.js');
+const { deleteModule } = require('./logic/delete.js');
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
@@ -43,6 +44,25 @@ app.get('/api/modules/:id', async (req, res) => {
     res.download(tarball);
   } catch (err) {
     res.status(404).send({ error: 'Module not ready yet' });
+  }
+});
+
+/**
+ * 
+ */
+app.delete('/api/modules/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const tarball = await deleteModule(id);
+    res.send({
+      status: true,
+      message: 'Removed ' + id,
+    })
+  } catch (err) {
+    res.status(404).send({ 
+      status: false,
+      message: 'Module not ready yet' 
+    });
   }
 });
 
