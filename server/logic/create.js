@@ -40,7 +40,7 @@ const installModules = async (id, packageJson) => {
       });
     });
     const tarball = `${tempDir}.tar`;
-    await tar.c({ cwd: tempDir, file: tarball }, ['node_modules']);
+    await tar.c({ cwd: tempDir, file: tarball, level: 7 }, ['node_modules']);
     await fs.remove(tempDir);
     
   } catch (err) {
