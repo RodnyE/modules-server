@@ -47,6 +47,11 @@ The request body should be a JSON object with the following format:
 }
 ```
 
+It is also possible to send the modules in plain text with each module separated by a comma:
+```
+express,lodash
+```
+
 #### Response
 
 The response will include a JSON object with the following format:

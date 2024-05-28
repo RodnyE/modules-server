@@ -14,9 +14,21 @@ app.use(morgan('dev'));
  * 
  */
 app.post('/api/create', async (req, res) => {
-  try {
-    const packageName = req.body.name;
-    const packageJson = req.body;
+  try { 
+    const body = req.body;
+    let packageJson = body;
+    
+    if (typeof(body) === 'string') {
+      packageJson = { dependencies: {} };
+      
+      body.split(',').forEach((module) => {
+        let parts = module.split('@');
+        let name = parts[2] ? parts[1] : parts[0];
+        let version = parts[2] || parts[1] || '*';
+        packageJson.dependencies[name] = version;
+      });
+    }
+    
     const job = await createModule(packageJson);
     
     res.send({ 
