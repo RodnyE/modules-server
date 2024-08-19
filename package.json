@@ -8,8 +8,8 @@
   "dependencies": {
     "express": "^4.18.3",
     "fs-extra": "^11.2.0",
+    "lodash": "^4.17.21",
     "morgan": "^1.10.0",
-    "pnpm": "^8.15.6",
     "tar": "^7.1.0",
     "uuid": "^9.0.1"
   }

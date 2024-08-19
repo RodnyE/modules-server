@@ -1,9 +1,10 @@
 
-const { TEMP } = require('../../config.js');
+const { TEMP, JOBLIST } = require('../../config');
 const fs = require('fs-extra');
 const childProcess = require('child_process');
 const tar = require('tar');
 const uuid = require('uuid');  
+const {jobsJson} = require('../utils/json');
 
 /**
  * Create and compress node_modules folder
@@ -17,6 +18,13 @@ const createModule = async (packageJson) => {
   // Create the temporary directory and return the id immediately
   await fs.mkdir(tempDir);
   
+  // Save job status
+  jobsJson.data[id] = {
+    id,
+    status: 'running',
+  }
+  jobsJson.write();
+
   // Start task in Background
   installModules(id, packageJson)
     .then(() => console.log('Success', packageJson))
@@ -31,7 +39,7 @@ const installModules = async (id, packageJson) => {
   try {
     await fs.writeFile(`${tempDir}/package.json`, JSON.stringify(packageJson));
     await new Promise((resolve, reject) => {
-      childProcess.exec(`cd ${tempDir} && npx pnpm install`, (err, stdout, stderr) => {
+      childProcess.exec(`cd ${tempDir} && npm install`, (err, stdout, stderr) => {
         if (err) {
           reject(err);
         } else {
@@ -42,6 +50,12 @@ const installModules = async (id, packageJson) => {
     const tarball = `${tempDir}.tar`;
     await tar.c({ cwd: tempDir, file: tarball, level: 7 }, ['node_modules']);
     await fs.remove(tempDir);
+
+    jobsJson.data[id].status = 'success';
+    jobsJson.data[id].result = { tarball };
+
+    jobsJson.write();
+
     
   } catch (err) {
     console.error(err);

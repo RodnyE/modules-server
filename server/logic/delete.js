@@ -1,16 +1,17 @@
 
-const { TEMP } = require('../../config.js');
+const { TEMP } = require('../../config');
 const fs = require('fs-extra');
+const { jobsJson } = require('../utils/json');
 
 const deleteModule = async (id) => {
-  const tarball = `${TEMP}/${id}.tar`;
+  const job = jobsJson.data[id];
+  if (!job || job.status !== 'success') return 0;
   
-  try {
-    await fs.remove(tarball);
-    return tarball;
-  } catch (err) {
-    throw err;
-  }
+  // delete tarball 
+  await fs.remove(job.result.tarball);
+
+  delete jobsJson.data[id];
+  jobsJson.write(); 
 }
 
 module.exports = {

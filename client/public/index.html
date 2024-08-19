@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Module Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Module Manager</h1>
+  <form id="create-form">
+    <label for="modules">Enter modules (e.g. express@4.17.1, mongoose@5.10.18):</label>
+    <input type="text" id="modules" name="modules">
+    <button type="submit">Create</button>
+  </form>
+
+  <div id="create-response"></div>
+
+  <h2>Get Module</h2>
+  <form id="get-form">
+    <label for="id">Enter module ID:</label>
+    <input type="text" id="id" name="id">
+    <button type="submit">Get</button>
+  </form>
+
+  <div id="get-response"></div>
+
+  <h2>Delete Module</h2>
+  <form id="delete-form">
+    <label for="id">Enter module ID:</label>
+    <input type="text" id="id" name="id">
+    <button type="submit">Delete</button>
+  </form>
+
+  <div id="delete-response"></div>
+
+  <script>
+    const createForm = document.getElementById('create-form');
+    const getForm = document.getElementById('get-form');
+    const deleteForm = document.getElementById('delete-form');
+
+    createForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const modulesInput = document.getElementById('modules');
+      const modules = modulesInput.value;
+      try {
+        const response = await fetch('/api/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ body: modules }),
+        });
+        const data = await response.json();
+        document.getElementById('create-response').innerHTML = `Job created: ${data.job}`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('create-response').innerHTML = 'Error creating job';
+      }
+    });
+
+    getForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const idInput = document.getElementById('id');
+      const id = idInput.value;
+      try { 
+        const a = document.createElement('a');
+        a.href = `/api/modules/${id}`;
+        a.download = `${id}.tar.gz`;
+        a.click();
+        document.getElementById('get-response').innerHTML = `Module downloaded: ${id}`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('get-response').innerHTML = 'Error getting module';
+      }
+    });
+
+    deleteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const idInput = document.getElementById('id');
+      const id = idInput.value;
+      try {
+        const response = await fetch(`/api/modules/${id}`, {
+          method: 'DELETE',
+        });
+        const data = await response.json();
+        document.getElementById('delete-response').innerHTML = `Module deleted: ${id}`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('delete-response').innerHTML = 'Error deleting module';
+      }
+    });
+  </script>
+</body>
+</html>

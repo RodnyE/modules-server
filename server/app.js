@@ -1,5 +1,5 @@
 
-const { TEMP } = require('../config.js');
+const { TEMP, CLIENT } = require('../config.js');
 const { createModule } = require('./logic/create.js');
 const { getModule } = require('./logic/get.js');
 const { deleteModule } = require('./logic/delete.js');
@@ -9,6 +9,7 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
+app.use('/', express.static(CLIENT + '/public'));
 
 /**
  * 
@@ -43,6 +44,19 @@ app.post('/api/create', async (req, res) => {
       status: false,
       message: 'Failed to start job' 
     });
+  }
+});
+
+/**
+ * 
+ */
+app.get('/api/status/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const tarball = await getModule(id);
+    res.json({ status: true, message: 'Module is ready'})
+  } catch (err) {
+    res.status(404).send({ status: false, error: 'Module not ready yet' });
   }
 });
 
